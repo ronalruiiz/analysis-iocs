@@ -46,9 +46,10 @@ class IOCService:
                 ioc.name = name[0].strip()
         else:
             ioc.name = 'no identificado'
-        if("Symantec" in data['last_analysis_results']):
-            symantec_detect = data['last_analysis_results']['Symantec']['category']
-            ioc.detection = 'symantec: '+symantec_detect
+        detection_epp = os.getenv("EPP")
+        if(detection_epp in data['last_analysis_results']):
+            epp_detect = data['last_analysis_results'][detection_epp]['category']
+            ioc.detection = detection_epp+': '+epp_detect
             ioc.apply = 'no'
         else:
             ioc.apply = 'sí'
