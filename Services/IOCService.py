@@ -27,10 +27,6 @@ class IOCService:
             analysis = data['last_analysis_stats']
             total_detected = analysis['harmless'] + analysis['malicious'] + analysis['suspicious'] + analysis['undetected']
             ioc.reputation = "{0} / {1}".format(analysis['malicious'],total_detected)
-            if(analysis['malicious'] >0):
-                ioc.apply = 'sí'
-            else:
-                ioc.apply = 'no'
         ioc.detection = 'abuseip: '+self.abuseIP(ioc.value)+' reports'
 
     def hash(self,data_all,ioc):
@@ -46,14 +42,15 @@ class IOCService:
                 ioc.name = name[0].strip()
         else:
             ioc.name = 'no identificado'
-        detection_epp = os.getenv("EPP")
-        if(detection_epp in data['last_analysis_results']):
-            epp_detect = data['last_analysis_results'][detection_epp]['category']
-            ioc.detection = detection_epp+': '+epp_detect
-            ioc.apply = 'no'
-        else:
-            ioc.apply = 'sí'
-            ioc.detection = 'no detectado'
+        detection_epp_env = os.getenv("EPP")
+        array_detection = str.split(detection_epp_env,",")
+        for detection_epp in array_detection:
+            if len(detection_epp) > 2:
+                if(detection_epp.strip() in data['last_analysis_results']):
+                    epp_detect = data['last_analysis_results'][detection_epp]['category']
+                    ioc.detection += detection_epp+': '+ epp_detect + ', '
+                else:
+                    ioc.detection += detection_epp+': '+ 'no detectado, ' 
 
     def getIOC(self,x,index):
         url = "https://www.virustotal.com/api/v3/search?query="+x

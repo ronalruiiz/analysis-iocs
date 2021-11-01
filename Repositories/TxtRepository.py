@@ -22,7 +22,6 @@ class TxtRepository:
             write('Tipo: {0}\n'.format(ioc.type))
             write("Reputación: {0}\n".format(ioc.reputation))    
             write("Detectado por: "+ioc.detection+"\n")
-            write("Aplica: "+ioc.apply)
             write("\n========================================\n")
             time.sleep(0.1)
             bar.next()

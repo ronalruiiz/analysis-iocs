@@ -23,7 +23,6 @@ class CmdRepository:
             write('Tipo: {0}'.format(ioc.type))
             write("Reputación: {0}".format(ioc.reputation))    
             write("Detectado por: "+ioc.detection)
-            write("Aplica: "+ioc.apply)
             write("\n")
             time.sleep(0.1)
             bar.next()
