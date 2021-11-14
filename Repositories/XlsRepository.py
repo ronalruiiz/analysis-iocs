@@ -15,7 +15,10 @@ class XlsRepository:
         self.ouput_data(query)
         df = pd.DataFrame([t.__dict__ for t in self.iocs])
         sf=StyleFrame(df)
-        sf.apply_column_style(cols_to_style=df.columns,width=25,styler_obj=Styler(bg_color=utils.colors.white, bold=False, font=utils.fonts.calibri,font_size=10),style_header=True)
+        sf.apply_column_style(cols_to_style=df.columns,width=15,styler_obj=Styler(bg_color=utils.colors.white, bold=False, font=utils.fonts.calibri,font_size=10),style_header=True)
+        sf.set_column_width(columns=['item'],width=10)
+        sf.set_column_width(columns=['value'],width=68)
+        sf.set_column_width(columns=['detection'],width=48)
         sf.to_excel(excel_writer,'IOCs',row_to_add_filters=0,index=False)
         excel_writer.save()
 

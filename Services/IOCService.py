@@ -3,6 +3,7 @@ from Models import Ioc
 import requests
 import os
 import argparse
+from Helpers.hash import detect_hash
 
 class IOCService:
     def __init__(self):
@@ -31,7 +32,6 @@ class IOCService:
 
     def hash(self,data_all,ioc):
         data  = (data_all['attributes'])
-        ioc.type = data_all['type']
         if 'last_analysis_stats' in data:
             analysis = data['last_analysis_stats']
             total_detected = analysis['harmless'] + analysis['malicious'] + analysis['suspicious'] + analysis['undetected']
@@ -56,11 +56,14 @@ class IOCService:
         url = "https://www.virustotal.com/api/v3/search?query="+x
         response = requests.get(url, headers=self.headers['vtotal'])
         ioc = Ioc(str(index),x.strip())
-        if len(response.json()['data']) > 0:
-            data_all = response.json()['data'][0]
-            if(re.search(self.regex_rules['domain'],x.lower()) or re.search(self.regex_rules['ip'],x.lower())):
+        if(re.search(self.regex_rules['domain'],x.lower()) or re.search(self.regex_rules['ip'],x.lower())):
+            if len(response.json()['data']) > 0:
+                data_all = response.json()['data'][0]
                 self.domain(data_all,ioc)
-            else:
+        else:
+            ioc.type = "Hash"+": "+detect_hash(ioc.value)
+            if len(response.json()['data']) > 0:
+                data_all = response.json()['data'][0]
                 self.hash(data_all,ioc)
                 
         return ioc
